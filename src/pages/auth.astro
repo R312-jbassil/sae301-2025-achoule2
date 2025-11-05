@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+---
+
+<Layout>
+  <Header />
+  <main class="min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md mx-auto bg-black rounded-lg p-10 shadow-lg">
+      <h2 class="text-center text-white text-xl font-extrabold uppercase tracking-widest mb-2">Connexion</h2>
+      <p class="text-center text-white/70 text-xs mb-5">Accédez à vos créations personnalisées</p>
+      <button id="googleLogin" class="w-full bg-white text-black py-3 rounded font-semibold flex items-center justify-center gap-2 hover:bg-gray-100 transition uppercase text-sm mb-6">
+  Se connecter avec Google
+</button>
+
+    </div>
+  </main>
+  <Footer />
+  
+<script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const pb = new PocketBase('http://127.0.0.1:8090');
+    document.getElementById('googleLogin').onclick = async () => {
+      try {
+        await pb.collection('utilisateur').authWithOAuth2({ provider: 'google' });
+        localStorage.setItem('loggedIn', 'true');
+        window.location.href = '/creations';
+      } catch (e) {
+        alert("Connexion Google échouée : " + e.message);
+      }
+    };
+  });
+</script>
+</Layout>
