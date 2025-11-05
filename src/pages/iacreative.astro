@@ -1,0 +1,130 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+---
+
+<Layout>
+  <Header />
+  <main class="max-w-[1600px] mx-auto px-6 pt-20 pb-16">
+    <div class="text-center mb-12">
+      <div class="flex justify-center items-center gap-4 mb-2">
+        <span class="text-red-600 text-3xl">✦</span>
+        <h1 class="text-4xl font-extrabold uppercase tracking-[0.28em]">IA CRÉATIVE</h1>
+      </div>
+      <p class="text-gray-500 uppercase tracking-wide">
+        Décrivez vos lunettes idéales et laissez notre IA créer <br />
+        un design unique pour vous
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
+      <section class="bg-black rounded-lg shadow-lg p-8 flex flex-col min-h-[440px]">
+        <h2 class="text-white text-base font-semibold uppercase tracking-wide mb-4">Décrivez vos lunettes idéales</h2>
+        <form id="ia-form" class="flex-1 flex flex-col gap-4">
+          <textarea
+            class="w-full rounded border border-white/10 px-4 py-3 text-base text-white bg-transparent placeholder:text-white/40 resize-none"
+            placeholder="Ex : Des lunettes de soleil noires sportives avec monture en titane..."
+            rows="3"
+            id="promptInput"
+          ></textarea>
+          <div>
+            <div class="text-xs font-semibold text-white/80 tracking-wide mb-2">Exemples de prompts</div>
+            <div class="flex flex-col gap-2">
+              <button type="button" class="rounded border border-white/10 px-3 py-2 text-xs text-white/70 hover:bg-white/5 transition" data-prompt="Des lunettes élégantes et minimalistes pour un look professionnel.">
+                DES LUNETTES ÉLÉGANTES ET MINIMALISTES POUR UN LOOK PROFESSIONNEL.
+              </button>
+              <button type="button" class="rounded border border-white/10 px-3 py-2 text-xs text-white/70 hover:bg-white/5 transition" data-prompt="Style vintage années 70 avec monture écaille">
+                STYLE VINTAGE ANNÉES 70 AVEC MONTURE ÉCAILLE
+              </button>
+              <button type="button" class="rounded border border-white/10 px-3 py-2 text-xs text-white/70 hover:bg-white/5 transition" data-prompt="Lunettes de soleil sportives et modernes en noir mat">
+                LUNETTES DE SOLEIL SPORTIVES ET MODERNES EN NOIR MAT
+              </button>
+              <button type="button" class="rounded border border-white/10 px-3 py-2 text-xs text-white/70 hover:bg-white/5 transition" data-prompt="Design futuriste avec accents métalliques dorés">
+                DESIGN FUTURISTE AVEC ACCENTS MÉTALLIQUES DORÉS
+              </button>
+            </div>
+          </div>
+          <button
+            type="submit"
+            class="mt-5 py-4 w-full bg-red-700 hover:bg-red-800 text-white rounded-lg font-bold uppercase tracking-wider text-base transition"
+            id="generateBtn"
+          >✦ Générer avec l'IA</button>
+        </form>
+      </section>
+
+      <section id="ia-preview" class="bg-gradient-to-br from-black via-neutral-900 to-black rounded-lg shadow-lg min-h-[440px] flex flex-col justify-center items-center relative p-10">
+        <div id="ia-preview-content" class="w-full h-full flex flex-col gap-2 items-center justify-center opacity-80">
+          <span class="text-gray-300 text-5xl">✧</span>
+          <div class="uppercase tracking-wide text-gray-300 text-sm">Votre design apparaîtra ici</div>
+        </div>
+      </section>
+    </div>
+
+    <div class="max-w-xl mx-auto mt-14 bg-white border border-black/10 rounded-lg px-8 py-8">
+      <h3 class="font-bold mb-3">Comment ça marche ?</h3>
+      <ol class="text-sm space-y-1 pl-3">
+        <li><span class="text-red-600 font-bold">1.</span> Décrivez le style, les matériaux et l’usage souhaité</li>
+        <li><span class="text-red-600 font-bold">2.</span> L’IA analyse votre description et génère un design unique</li>
+        <li><span class="text-red-600 font-bold">3.</span> Régénérez jusqu’à obtenir le design parfait</li>
+        <li><span class="text-red-600 font-bold">4.</span> Enregistrez et commandez votre création</li>
+      </ol>
+    </div>
+  </main>
+  <Footer />
+
+  <script is:client>
+    document.querySelectorAll('[data-prompt]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('promptInput').value = btn.dataset.prompt;
+      });
+    });
+
+    document.getElementById('ia-form').onsubmit = async e => {
+      e.preventDefault();
+      const preview = document.getElementById('ia-preview-content');
+      const val = document.getElementById('promptInput').value.trim();
+      if (!val) {
+        preview.innerHTML = '<div class="text-red-600 text-center p-8">Merci de décrire votre idée !</div>';
+        return;
+      }
+      preview.innerHTML = `
+        <div class="flex flex-col gap-4 items-center justify-center opacity-80">
+          <span class="animate-spin text-gray-300 text-5xl">⏳</span>
+          <div class="tracking-wide text-gray-400 text-base">Génération en cours...</div>
+        </div>
+      `;
+      try {
+        // Appelle ton endpoint Astro qui lui, appelle DALL-E (pas direct browser !)
+        const response = await fetch('../api/dalle', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ prompt: val })
+        });
+        if (!response.ok) throw new Error('Erreur IA (' + response.status + ')');
+        const data = await response.json();
+        if (data.image_url) {
+          preview.innerHTML = `<img src="${data.image_url}" class="rounded-lg max-h-60 object-contain mx-auto" alt="Design IA" />`;
+        } else {
+          preview.innerHTML = `<div class="text-red-600 p-10">Aucun résultat généré</div>`;
+        }
+      } catch (err) {
+        preview.innerHTML = `<div class="text-red-600 py-16">Erreur IA<br>${err.message}</div>`;
+      }
+    }
+  </script>
+<script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
+<script is:client>
+  const pb = new PocketBase('http://127.0.0.1:8090');
+
+  document.getElementById('googleLogin').onclick = async () => {
+    try {
+      await pb.collection('utilisateur').authWithOAuth2({ provider: 'google' });
+      localStorage.setItem('loggedIn', 'true');
+      window.location.href = '/creations';
+    } catch (e) {
+      alert("Connexion Google échouée : " + e.message);
+    }
+  };
+</script>
+</Layout>
