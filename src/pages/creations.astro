@@ -1,0 +1,73 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+---
+
+<Layout>
+  <Header />
+  <main class="max-w-5xl mx-auto pt-10">
+    <h2 class="text-lg font-extrabold uppercase mb-1">Mes créations</h2>
+    <div class="mb-2 text-sm text-black/60" id="count"></div>
+    <div id="creations-list" class="grid gap-8 md:grid-cols-2"></div>
+  </main>
+  <Footer />
+
+  <script is:client>
+    const creations = JSON.parse(localStorage.getItem('creations') || '[]');
+    const loggedIn = localStorage.getItem('loggedIn') === 'true';
+    document.getElementById('count').textContent =
+      creations.length > 0
+        ? `${creations.length} création${creations.length > 1 ? 's' : ''} enregistrée${creations.length > 1 ? 's' : ''}`
+        : "Aucune création enregistrée";
+    document.getElementById('creations-list').innerHTML = creations.map((c, i) => `
+      <div class="border rounded-lg shadow bg-white max-w-md">
+        <div class="p-3 flex items-center justify-center bg-black/80" style="height:220px;">
+          ${c.svg}
+        </div>
+        <div class="p-4">
+          <div class="text-xs mb-1"><b>Monture :</b> ${c.frameMaterial}</div>
+          <div class="text-xs mb-1"><b>Branches :</b> ${c.templeMaterial}</div>
+          <div class="text-xs mb-1"><b>Créé le</b> : ${new Date(c.date).toLocaleDateString()}</div>
+          ${loggedIn
+            ? `<button class="w-full py-2 bg-red-600 text-white font-bold rounded hover:bg-red-700 transition mt-2">Acheter</button>`
+            : `<div class="text-center text-xs text-black/60 mt-3">Connectez-vous pour acheter</div>`
+          }
+          <button data-idx="${i}" class="text-red-600 border border-red-600 px-3 py-1 rounded hover:bg-red-600 hover:text-white text-xs mt-3">Supprimer</button>
+        </div>
+      </div>
+    `).join("");
+
+    // Suppression
+    document.querySelectorAll('#creations-list button[data-idx]').forEach(btn => {
+      btn.onclick = () => {
+        creations.splice(Number(btn.dataset.idx), 1);
+        localStorage.setItem('creations', JSON.stringify(creations));
+        location.reload();
+      };
+    });
+  </script>
+<script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
+<script is:client>
+  const pb = new PocketBase('http://127.0.0.1:8090');
+
+  document.getElementById('googleLogin').onclick = async () => {
+    try {
+      await pb.collection('utilisateur').authWithOAuth2({ provider: 'google' });
+      localStorage.setItem('loggedIn', 'true');
+      window.location.href = '/creations';
+    } catch (e) {
+      alert("Connexion Google échouée : " + e.message);
+    }
+  };
+  // Peut aussi être géré par <a href="/acheter?idx=${i}">
+document.querySelectorAll('button.acheter').forEach(btn => {
+  btn.onclick = () => {
+    window.location.href = `/acheter?idx=${btn.dataset.idx}`;
+  };
+});
+
+</script>
+
+</Layout>
+
