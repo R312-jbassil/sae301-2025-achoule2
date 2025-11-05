@@ -38,7 +38,7 @@ jobs:
         rm: false
         overwrite: true
         debug: true
-    - name: Install production dependencies on VPS
+    - name: Install production dependencies on the VPS
       uses: appleboy/ssh-action@v1.0.0
       with:
         host: ${{ secrets.HOST }}
