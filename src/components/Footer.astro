@@ -1,0 +1,84 @@
+---
+// Utilise lucide-astro pour importer les icônes au lieu de lucide-react
+import { Instagram, Facebook, Mail } from "lucide-astro";
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-black text-white border-t border-white/10 mt-auto">
+  <div class="max-w-[1920px] mx-auto px-12 py-16">
+    <!-- Main footer content -->
+    <div class="grid grid-cols-4 gap-12 mb-12">
+      <!-- Brand column -->
+      <div class="space-y-4">
+        <h3 class="text-white tracking-[0.2em] uppercase">TaVue</h3>
+        <p class="text-white/60 text-sm leading-relaxed">
+          Des lunettes sur-mesure, façonnées avec passion dans nos ateliers français.
+          L'alliance du savoir-faire artisanal et de l'innovation.
+        </p>
+        <div class="flex items-center gap-2 text-xs text-white/50">
+          <span class="inline-block w-6 h-4 bg-gradient-to-r from-blue-600 via-white to-red-600 rounded-sm"></span>
+          Fabriqué en France
+        </div>
+      </div>
+
+      <!-- Service column -->
+      <div class="space-y-4">
+        <h4 class="text-white tracking-[0.1em] uppercase text-sm">Service Client</h4>
+        <ul class="space-y-3">
+          <li><a href="#" class="text-white/60 text-sm hover:text-white transition-colors">Nous contacter</a></li>
+          <li><a href="#" class="text-white/60 text-sm hover:text-white transition-colors">FAQ</a></li>
+          <li><a href="#" class="text-white/60 text-sm hover:text-white transition-colors">Guide des tailles</a></li>
+          <li><a href="#" class="text-white/60 text-sm hover:text-white transition-colors">Livraison & Retours</a></li>
+        </ul>
+      </div>
+
+      <!-- About column -->
+      <div class="space-y-4">
+        <h4 class="text-white tracking-[0.1em] uppercase text-sm">À Propos</h4>
+        <ul class="space-y-3">
+          <li><a href="#" class="text-white/60 text-sm hover:text-white transition-colors">Notre Histoire</a></li>
+          <li><a href="#" class="text-white/60 text-sm hover:text-white transition-colors">Fabrication Française</a></li>
+          <li><a href="#" class="text-white/60 text-sm hover:text-white transition-colors">Engagement Qualité</a></li>
+          <li><a href="#" class="text-white/60 text-sm hover:text-white transition-colors">Nos Ateliers</a></li>
+        </ul>
+      </div>
+
+      <!-- Newsletter column -->
+      <div class="space-y-4">
+        <h4 class="text-white tracking-[0.1em] uppercase text-sm">Newsletter</h4>
+        <p class="text-white/60 text-sm leading-relaxed">
+          Recevez nos dernières créations et actualités.
+        </p>
+        <div class="flex gap-2">
+          <input
+            type="email"
+            placeholder="Votre email"
+            class="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-red-600 transition-colors"
+          />
+          <button class="px-6 py-3 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm uppercase tracking-[0.1em]">
+            OK
+          </button>
+        </div>
+
+        <!-- Social links -->
+        <div class="flex items-center gap-4 pt-2">
+          <a href="#" class="text-white/60 hover:text-white transition-colors" aria-label="Instagram"><Instagram class="w-5 h-5" /></a>
+          <a href="#" class="text-white/60 hover:text-white transition-colors" aria-label="Facebook"><Facebook class="w-5 h-5" /></a>
+          <a href="#" class="text-white/60 hover:text-white transition-colors" aria-label="Email"><Mail class="w-5 h-5" /></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="pt-8 border-t border-white/10 flex items-center justify-between">
+      <p class="text-white/50 text-xs uppercase tracking-wider">
+        © {currentYear} TaVue. Tous droits réservés.
+      </p>
+      <div class="flex items-center gap-6">
+        <a href="#" class="text-white/50 text-xs hover:text-white transition-colors uppercase tracking-wider">Mentions Légales</a>
+        <a href="#" class="text-white/50 text-xs hover:text-white transition-colors uppercase tracking-wider">Politique de Confidentialité</a>
+        <a href="#" class="text-white/50 text-xs hover:text-white transition-colors uppercase tracking-wider">CGV</a>
+      </div>
+    </div>
+  </div>
+</footer>
