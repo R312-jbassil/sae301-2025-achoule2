@@ -1,0 +1,50 @@
+---
+const currentRoute = 'configurateur'; // à lier à ta logique de routage selon la page active
+---
+
+<header class="bg-black w-full py-7 flex items-center justify-between">
+  <div class="ml-14">
+    <a href="/" class="text-white text-4xl font-extrabold tracking-[0.35em] uppercase">TAVUE</a>
+  </div>
+  <nav class="mr-24">
+    <ul class="flex gap-12 items-center">
+      <li>
+        <a
+          href="/"
+          class={`uppercase text-white tracking-[0.12em] text-lg relative pb-1 
+            ${currentRoute === "configurateur" ? "font-semibold" : "text-gray-400 font-medium"}
+          `}
+        >
+          CONFIGURATEUR
+          {currentRoute === "configurateur" && (
+            <span class="block absolute left-0 bottom-0 w-full h-[2px] bg-red-700"></span>
+          )}
+        </a>
+      </li>
+      <li>
+        <a
+          href="/iacreative"
+          class={`uppercase tracking-[0.12em] text-lg pb-1 ${currentRoute === "iacreative" ? "text-white font-semibold" : "text-gray-400 font-medium"}`}
+        >
+          IA CRÉATIVE
+        </a>
+      </li>
+      <li>
+        <a
+          href="/creations"
+          class={`uppercase tracking-[0.12em] text-lg pb-1 ${currentRoute === "creations" ? "text-white font-semibold" : "text-gray-400 font-medium"}`}
+        >
+          MES CRÉATIONS
+        </a>
+      </li>
+      <li>
+        <a
+          href="/auth"
+          class={`uppercase tracking-[0.12em] text-lg pb-1 ${currentRoute === "auth" ? "text-white font-semibold" : "text-gray-400 font-medium"}`}
+        >
+          CONNEXION
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
