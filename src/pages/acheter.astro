@@ -3,58 +3,43 @@ import Layout from '../layouts/Layout.astro'
 import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
 ---
-
 <Layout>
-  <Header />
-  <main>
-    <h2 class="text-2xl font-bold uppercase my-8 text-center">Finaliser la commande</h2>
-    <div id="purchase-content"></div>
+  <Header/>
+  <main class="max-w-xl mx-auto px-4 pt-10">
+    <h1 class="text-2xl font-bold mb-6">Commande en ligne</h1>
+    <div id="recap" class="mb-6"></div>
+    <form id="commandeForm" class="bg-white p-5 rounded shadow border" style="max-width:480px">
+      <label class="block mb-2">Nom&nbsp;: <input name="nom" required class="border px-2 py-1 rounded w-full" /></label>
+      <label class="block mb-2">Email&nbsp;: <input name="email" type="email" required class="border px-2 py-1 rounded w-full"/></label>
+      <label class="block mb-2">Adresse&nbsp;: <input name="adresse" required class="border px-2 py-1 rounded w-full"/></label>
+      <button type="submit" class="bg-red-600 text-white font-bold rounded py-2 px-6 mt-4">Valider la commande</button>
+    </form>
+    <div id="confirmation" class="mt-6 text-green-700 font-bold"></div>
   </main>
-  <Footer />
-  
   <script>
-    // Récupère l'index de la création dans l'URL
     const params = new URLSearchParams(window.location.search);
     const idx = params.get('idx');
-
     const creations = JSON.parse(localStorage.getItem('creations') || '[]');
-    const selected = creations[idx];
-
-    if (!selected) {
-      document.getElementById('purchase-content').innerHTML = `<div class="text-center text-red-500">Aucune création sélectionnée</div>`;
-    } else {
-      document.getElementById('purchase-content').innerHTML = `
-        <div class="flex flex-col md:flex-row gap-10 items-start justify-center max-w-4xl mx-auto">
-          <div class="bg-black text-white rounded p-6 w-full max-w-xs">
-            <div class="mb-2 flex items-center justify-center">${selected.svg}</div>
-            <div class="text-xs uppercase text-gray-200 mb-1">Monture : ${selected.frameMaterial}</div>
-            <div class="text-xs uppercase text-gray-200 mb-1">Branches : ${selected.templeMaterial}</div>
-            <div class="text-xs uppercase text-gray-200 mb-1">Dimensions : ${selected.bridgeWidth}mm / ${selected.lensSize}mm</div>
-            <div class="my-3 border-t border-white/10"></div>
-            <div class="flex justify-between text-lg mb-2"><span>Lunettes Tavue</span><span>299 €</span></div>
-            <div class="flex justify-between text-xs text-green-500"><span>Livraison</span><span>GRATUITE</span></div>
-            <div class="flex justify-between font-bold text-xl pt-3 border-t border-white/10"><span>Total</span><span>299 €</span></div>
-          </div>
-          <!-- Pane paiement (factice ici) -->
-          <form class="bg-black text-white rounded p-6 flex-1 max-w-xl" onsubmit="alert('Paiement simulé !'); return false;">
-            <h3 class="mb-4 uppercase font-bold text-base">Informations de paiement</h3>
-            <label class="block text-xs mb-1 mt-2">Numéro de carte</label>
-            <input class="w-full mb-3 rounded bg-white/10 p-2 text-white" required pattern="\\d{16}">
-            
-            <label class="block text-xs mb-1">Nom du titulaire</label>
-            <input class="w-full mb-3 rounded bg-white/10 p-2 text-white" required>
-            
-            <label class="block text-xs mb-1">Date d'expiration</label>
-            <input class="w-full mb-3 rounded bg-white/10 p-2 text-white" placeholder="MM/AA" required pattern="\\d{2}/\\d{2}">
-            
-            <label class="block text-xs mb-1">CVV</label>
-            <input class="w-full mb-3 rounded bg-white/10 p-2 text-white" required pattern="\\d{3}">
-            
-            <div class="text-xs text-gray-300 mb-3 mt-4">Vos informations bancaires sont cryptées et sécurisées. Nous n'enregistrons jamais vos données de carte.</div>
-            <button type="submit" class="w-full py-3 rounded bg-red-600 font-bold text-lg hover:bg-red-700">PAYER 299&nbsp;€</button>
-          </form>
+    const produit = creations[idx];
+    if (produit) {
+      document.getElementById('recap').innerHTML = `
+        <div class='p-4 border mb-2 rounded bg-black text-white'>
+          <div class='mb-2'><b>Monture :</b> ${produit.frameMaterial}</div>
+          <div class='mb-2'><b>Branches :</b> ${produit.templeMaterial}</div>
+          <div class='mb-2'><b>Dimensions :</b> ${produit.bridgeWidth || ''}mm / ${produit.lensSize || ''}mm</div>
+          <div>${produit.svg}</div>
         </div>
       `;
+    } else {
+      document.getElementById('recap').innerText = 'Produit inconnu.';
     }
+    document.getElementById('commandeForm').onsubmit = (e) => {
+      e.preventDefault();
+      document.getElementById('confirmation').innerText =
+        'Merci pour votre commande ! Ce tunnel de paiement est simulé.';
+    };
   </script>
+  <Footer/>
 </Layout>
+
+
